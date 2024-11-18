@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Dashboard</title>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="content">
+    <h1>Intelligent Garden</h1>
+    <div id="sensor-data">
+      <div class="card" id="airHumidity">
+        <h2>Air Humidity <i class="fas fa-wind"></i></h2>
+        <p>
+          <span id="humidity">--</span>
+          <i class="fas fa-percent"></i>
+        </p>
+      </div>
+      <div class="card" id="show_light">
+        <h2>Light <i class="fas fa-lightbulb"></i></h2>
+        <p>
+          <span id="light">--</span>
+          <i class="fas fa-percent"></i>
+        </p>
+      </div>
+      <div class="card" id="show_soil">
+        <h2>Soil Moisture <i class="fas fa-seedling"></i></h2>
+        <p>
+          <span id="soilMoisture">--</span>
+          <i class="fas fa-percent"></i>
+        </p>
+      </div>
+      <div class="card" id="show_temp">
+        <h2>Temperature <i class="fas fa-thermometer-half"></i></h2>
+        <p>
+          <span id="temperature">--</span>
+          <i class="fas fa-percent"></i>
+        </p>
+      </div>
+    </div>
+    <div class="motor">
+      <h2>Motor State: <span id="motorState">--</span></h2>
+    </div>
+  </div>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
