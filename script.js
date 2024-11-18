@@ -43,10 +43,12 @@ onValue(plant1Ref, (snapshot) => {
     // Update the data on the page
     document.getElementById('humidity').textContent = data.humidity + '%';
     document.getElementById('light').textContent = data.light + ' lx';
-    document.getElementById('temperature').textContent = data.temperature + 'Â°C';
+    document.getElementById('temperature').textContent = data.temperature + '°C';
     document.getElementById('soilMoisture').textContent = data.soil_moisture + '%';
-    document.getElementById('pump') = data.pump ? true : false;
-    document.getElementById('timestamp').textContent = formatTimestamp(data.timestamp);
+    document.getElementById('motorState').textContent = data.pump ? "On" : "Off";
+
+    // Correctly update the timestamp
+    document.getElementById('timeStamp').textContent = formatTimestamp(data.timestamp);
   } catch (error) {
     console.error("Error updating data:", error); // Debugging: log errors
   }
