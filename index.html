@@ -3,55 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sensor Dashboard</title>
+  <title>Awesome Tree Dashboard</title>
   <script type="module" src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="loading-screen">
+    <div class="spinner"></div>
+  </div>
   <div id="particles-js"></div>
   <div class="content">
-    <h1>Awesome Tree</h1>
-    <div id="sensor-data">
-      <div id="sensor-data-col">
-      <div class="card" id="airHumidity">
-        <h2>Air Humidity <i class="fas fa-wind"></i></h2>
+    <h1>Awesome Tree Dashboard</h1>
+    
+    <div class="sensor-grid">
+      <div class="card" id="esp-card">
+        <div class="online-indicator">
+          <span class="blink"></span>
+        </div>
+        <h2>ESP Sensor <i class="fas fa-microchip"></i></h2>
         <p>
-          <span id="humidity">--</span>
+          Air Humidity: <span id="humidity">--</span> <i class="fas fa-wind"></i>
         </p>
-      </div>
-      <div class="card" id="show_light">
-        <h2>Light <i class="fas fa-lightbulb"></i></h2>
         <p>
-          <span id="light">--</span>
+          Temperature: <span id="temperature">--</span> <i class="fas fa-thermometer-half"></i>
         </p>
+        <div class="timestamp">
+          Updated On: <span id="timeStamp">--</span>
+        </div>
       </div>
-      </div>
-      <div class="tree-image">
-        <img src="img/hugtree.gif" alt="Tree Infographic" ">
-      </div>
-      <div id="sensor-data-col">
-      <div class="card" id="show_soil">
-        <h2>Soil Moisture <i class="fas fa-seedling"></i></h2>
+
+      <div class="card" id="plant1-card">
+        <div class="online-indicator">
+          <span class="blink"></span>
+        </div>
+        <h2>Plant 1 <i class="fas fa-seedling"></i></h2>
         <p>
-          <span id="soilMoisture">--</span>
+          Light: <span id="light1">--</span> <i class="fas fa-lightbulb"></i>
         </p>
-      </div>
-      <div class="card" id="show_temp">
-        <h2>Temperature <i class="fas fa-thermometer-half"></i></h2>
         <p>
-          <span id="temperature">--</span>
+          Soil Moisture: <span id="soilMoisture1">--</span> <i class="fas fa-tint"></i>
         </p>
+        <p>
+          Pump State: <span id="pumpState1">--</span> <i class="fas fa-pump"></i>
+        </p>
+        <div class="timestamp">
+          Updated On: <span id="timeStamp1">--</span>
+        </div>
       </div>
-    </div>
-    </div>
-    <div class="motor">
-      <h2>Motor State: <span id="motorState">--</span></h2>
-      <h2>Updated On: <span id="timeStamp">--</span></h2>
+
+      <div class="card" id="plant2-card">
+        <div class="online-indicator">
+          <span class="blink"></span>
+        </div>
+        <h2>Plant 2 <i class="fas fa-seedling"></i></h2>
+        <p>
+          Light: <span id="light2">--</span> <i class="fas fa-lightbulb"></i>
+        </p>
+        <p>
+          Soil Moisture: <span id="soilMoisture2">--</span> <i class="fas fa-tint"></i>
+        </p>
+        <p>
+          Pump State: <span id="pumpState2">--</span> <i class="fas fa-pump"></i>
+        </p>
+        <div class="timestamp">
+          Updated On: <span id="timeStamp2">--</span>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script>
+    // Particles.js configuration
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5, random: false },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+        modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+      },
+      retina_detect: true
+    });
+  </script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
