@@ -13,39 +13,43 @@
 <body>
   <div id="particles-js"></div>
   <div class="content">
-    <h1>Intelligent Garden</h1>
+    <h1>Awesome Tree</h1>
     <div id="sensor-data">
+      <div id="sensor-data-col">
       <div class="card" id="airHumidity">
         <h2>Air Humidity <i class="fas fa-wind"></i></h2>
         <p>
           <span id="humidity">--</span>
-          <i class="fas fa-percent"></i>
         </p>
       </div>
       <div class="card" id="show_light">
         <h2>Light <i class="fas fa-lightbulb"></i></h2>
         <p>
           <span id="light">--</span>
-          <i class="fas fa-percent"></i>
         </p>
       </div>
+      </div>
+      <div class="tree-image">
+        <img src="img/hugtree.gif" alt="Tree Infographic" ">
+      </div>
+      <div id="sensor-data-col">
       <div class="card" id="show_soil">
         <h2>Soil Moisture <i class="fas fa-seedling"></i></h2>
         <p>
           <span id="soilMoisture">--</span>
-          <i class="fas fa-percent"></i>
         </p>
       </div>
       <div class="card" id="show_temp">
         <h2>Temperature <i class="fas fa-thermometer-half"></i></h2>
         <p>
           <span id="temperature">--</span>
-          <i class="fas fa-percent"></i>
         </p>
       </div>
     </div>
+    </div>
     <div class="motor">
       <h2>Motor State: <span id="motorState">--</span></h2>
+      <h2>Updated On: <span id="timeStamp">--</span></h2>
     </div>
   </div>
   <script type="module" src="script.js"></script>
