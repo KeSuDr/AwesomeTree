@@ -5,8 +5,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'your-email@gmail.com',  // Your Gmail address
-    pass: 'your-email-password',   // Your Gmail password or app-specific password (if 2FA is enabled)
+    user: 'treeawesome888@gmail.com',  // Your Gmail address
+    pass: 'awesometree',   // Your Gmail password or app-specific password (if 2FA is enabled)
   },
 });
 
@@ -19,8 +19,8 @@ exports.sendEmailOnDataChange = functions.database.ref('/ESP32-Gateway1')
     // Check if the moisture level is low (example condition)
     if (newValue.plant1.soil_moisture < 30) {
       const mailOptions = {
-        from: 'your-email@gmail.com',
-        to: 'recipient-email@example.com',
+        from: 'treeawesome888@gmail.com',
+        to: 'eurkung@gmail.com',
         subject: 'Soil Moisture Alert',
         text: `Alert: The soil moisture level of Plant 1 is low. Current level: ${newValue.plant1.soil_moisture}%`,
       };

@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
-import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
+import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -45,6 +45,40 @@ function updateOnlineIndicator(cardId, timestamp) {
   }
 }
 
+// Initialize EmailJS (Make sure to add your user ID if necessary)
+emailjs.init('0UZ2mZidZTAGepxNG');
+
+// Function to send email via EmailJS
+function sendEmail(subject, message) {
+  const templateParams = {
+    to_email: 'eurkung@gmail.com',  // Replace with your email
+    subject: subject,
+    message: message,
+  };
+
+  emailjs.send('service_q6j0aro', 'template_l6zejta', templateParams)
+    .then(response => {
+      console.log('Email sent successfully:', response);
+    })
+    .catch(error => {
+      console.error('Error sending email:', error);
+    });
+}
+
+document.getElementById('capture-button').addEventListener('click', () => {
+  // Reference to the photo handler in Firebase
+  const photoHandlerRef = ref(db, 'ESP32-Gateway1/plant1/esp32-cam1/capture-handler');
+
+  // Update photoHandler value to 1 (indicating photo capture)
+  set(photoHandlerRef, 1)
+    .then(() => {
+      console.log('Photo handler updated to 1.');
+      // Optionally, you can take a photo here or trigger your camera function
+    })
+    .catch((error) => {
+      console.error('Error updating photo handler:', error);
+    });
+});
 
 // Reference to ESP32-Gateway1 data and listen for changes
 const espRef = ref(db, 'ESP32-Gateway1');
@@ -66,18 +100,30 @@ onValue(espRef, (snapshot) => {
 
     // Update plant1 data
     const plant1Timestamp = parseInt(data.plant1.timestamp);
+    const image1Timestamp = parseInt(data.plant1['esp32-cam1'].timestamp);
     const plant1base64Image = data.plant1['esp32-cam1'].img;
     document.getElementById('light1').textContent = formatValue(data.plant1.light) + ' lx';
     document.getElementById('soilMoisture1').textContent = formatValue(data.plant1.soil_moisture) + '%';
     document.getElementById('pumpState1').textContent = data.plant1.pump ? "On" : "Off";
     document.getElementById('timeStamp1').textContent = formatTimestamp(plant1Timestamp);
+
     document.getElementById('plant1-image').src = `data:image/jpeg;base64,${plant1base64Image}`;
+    document.getElementById('image1timeStamp').textContent = formatTimestamp(image1Timestamp);
     // Update plant2 data
     const plant2Timestamp = parseInt(data.plant2.timestamp);
     document.getElementById('light2').textContent = formatValue(data.plant2.light) + ' lx';
     document.getElementById('soilMoisture2').textContent = formatValue(data.plant2.soil_moisture) + '%';
     document.getElementById('pumpState2').textContent = data.plant2.pump ? "On" : "Off";
     document.getElementById('timeStamp2').textContent = formatTimestamp(plant2Timestamp);
+
+    // Check for conditions and send email if required
+    // if (data.plant1.soil_moisture < 30) {  // Example condition: Soil moisture below 30%
+    //   sendEmail('Plant1 Soil Moisture Alert', 'Soil moisture is too low for Plant1.');
+    // }
+
+    if (data.temperature > 50) {  // Example condition: Temperature exceeds 30°C
+      sendEmail('Temperature Alert', `Temperature is too high: ${data.temperature}°C`);
+    }
 
     // Update online indicators
     updateOnlineIndicator('esp-card', espTimestamp);
