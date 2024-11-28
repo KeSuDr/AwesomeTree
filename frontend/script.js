@@ -1,5 +1,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
 import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
+import EdgeImpulseClassifier from './run-impulse';
+
 
 // Firebase configuration
 const firebaseConfig = {
@@ -70,6 +72,7 @@ onValue(espRef, (snapshot) => {
     document.getElementById('soilMoisture1').textContent = formatValue(data.plant1.soil_moisture) + '%';
     document.getElementById('pumpState1').textContent = data.plant1.pump ? "On" : "Off";
     document.getElementById('timeStamp1').textContent = formatTimestamp(plant1Timestamp);
+    document.getElementById('plant1-image').src = data.plant1.image;
 
     // Update plant2 data
     const plant2Timestamp = parseInt(data.plant2.timestamp);
@@ -90,3 +93,38 @@ onValue(espRef, (snapshot) => {
     console.error("Error updating data:", error); // Debugging: log errors
   }
 });
+
+
+
+//base64 to hex
+const sharp = require('sharp');
+
+// Function to convert base64 to hex after resizing to 96x96
+async function base64ToHex(base64String) {
+    // Decode the base64 string into a buffer
+    const buffer = Buffer.from(base64String, 'base64');
+    
+    // Resize the image to 96x96 using sharp
+    const resizedBuffer = await sharp(buffer)
+        .resize(96, 96)  // Resize the image to 96x96
+        .greyscale()     // Convert the image to grayscale
+        .raw()           // Get the raw pixel data
+        .toBuffer();
+
+    // Convert the resized buffer to hex
+    const hexArray = [];
+    for (let i = 0; i < resizedBuffer.length; i++) {
+        const hex = resizedBuffer[i].toString(16).padStart(2, '0'); // Convert each byte to hex
+        hexArray.push(hex);
+    }
+
+    // Join the hex values into a single string (optional, can return as an array if preferred)
+    return hexArray.join('');
+}
+
+// Example usage
+const base64Image = data.plant1.image; // Replace with your Base64 image string
+base64ToHex(base64Image)
+
+
+const classifier = new EdgeImpulseClassifier();
