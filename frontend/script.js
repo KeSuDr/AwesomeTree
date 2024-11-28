@@ -66,11 +66,12 @@ onValue(espRef, (snapshot) => {
 
     // Update plant1 data
     const plant1Timestamp = parseInt(data.plant1.timestamp);
+    const plant1base64Image = data.plant1['esp32-cam1'].img;
     document.getElementById('light1').textContent = formatValue(data.plant1.light) + ' lx';
     document.getElementById('soilMoisture1').textContent = formatValue(data.plant1.soil_moisture) + '%';
     document.getElementById('pumpState1').textContent = data.plant1.pump ? "On" : "Off";
     document.getElementById('timeStamp1').textContent = formatTimestamp(plant1Timestamp);
-
+    document.getElementById('plant1-image').src = `data:image/jpeg;base64,${plant1base64Image}`;
     // Update plant2 data
     const plant2Timestamp = parseInt(data.plant2.timestamp);
     document.getElementById('light2').textContent = formatValue(data.plant2.light) + ' lx';
