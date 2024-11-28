@@ -1,19 +1,38 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const functions = require('firebase-functions');
+const nodemailer = require('nodemailer');
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+// Set up Nodemailer with Gmail
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'treeawesome888@gmail.com',  // Your Gmail address
+    pass: 'awesometree',   // Your Gmail password or app-specific password (if 2FA is enabled)
+  },
+});
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// Cloud Function to send email based on data changes
+exports.sendEmailOnDataChange = functions.database.ref('/ESP32-Gateway1')
+  .onUpdate((change, context) => {
+    // Get the new value from the Realtime Database
+    const newValue = change.after.val();
+    
+    // Check if the moisture level is low (example condition)
+    if (newValue.plant1.soil_moisture < 30) {
+      const mailOptions = {
+        from: 'treeawesome888@gmail.com',
+        to: 'eurkung@gmail.com',
+        subject: 'Soil Moisture Alert',
+        text: `Alert: The soil moisture level of Plant 1 is low. Current level: ${newValue.plant1.soil_moisture}%`,
+      };
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+      // Send the email
+      return transporter.sendMail(mailOptions)
+        .then(() => {
+          console.log('Email sent successfully');
+        })
+        .catch((error) => {
+          console.error('Error sending email:', error);
+        });
+    }
+    return null;
+  });
