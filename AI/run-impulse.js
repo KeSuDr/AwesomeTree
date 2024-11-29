@@ -66,6 +66,10 @@ class EdgeImpulseClassifier {
         heapBytes.set(new Uint8Array(typedArray.buffer));
         return { ptr: ptr, buffer: heapBytes };
     }
+    
 }
+
+
+
 
 module.exports = EdgeImpulseClassifier;
