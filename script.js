@@ -1,5 +1,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
 import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
+// import EdgeImpulseClassifier from './AI/run-impulse.js';  // Assuming run-impulse.js is a module
+// import base64ToHex from './AI/base64tohex.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -16,6 +18,64 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+
+// //MODEL
+
+// // Initialize the classifier
+// const classifier = new EdgeImpulseClassifier();
+
+// // Function to classify an image using the model
+// async function classifyImageFromFirebase(base64Image) {
+//   try {
+//     // Step 1: Convert base64 image to hex data
+//     const hexData = await base64ToHex(base64Image);
+//     console.log('Hex Data:', hexData); // Optionally log the hex data for debugging
+
+//     // Step 2: Initialize the classifier if not already initialized
+//     await classifier.init();
+
+//     // Step 3: Convert the hex data into the proper format (assuming it's an array of raw pixel data)
+//     const rawData = convertHexToRawData(hexData);  // You may need to adapt this based on how the model expects the input
+
+//     // Step 4: Classify the image using the model
+//     const result = classifier.classify(rawData);
+//     console.log('Classification Result:', result);
+
+//     // Step 5: Display the results (adjust depending on your UI)
+//     displayResults(result);
+
+//   } catch (error) {
+//     console.error('Error classifying image:', error);
+//   }
+// }
+
+// // Helper function to convert hex data to raw pixel data
+// function convertHexToRawData(hexData) {
+//   const rawData = new Float32Array(hexData.length / 2);
+//   for (let i = 0; i < hexData.length; i += 2) {
+//     rawData[i / 2] = parseInt(hexData.slice(i, i + 2), 16);
+//   }
+//   return rawData;
+// }
+
+// // Function to display the classification results on your webpage
+// function displayResults(result) {
+//   // Example of displaying anomaly and classification results
+//   console.log('Anomaly:', result.anomaly);
+//   result.results.forEach((item) => {
+//     console.log(`Label: ${item.label}, Value: ${item.value}`);
+//     // You can display the results on your webpage as needed
+//     document.getElementById('classificationResult').innerHTML = `Label: ${item.label}, Value: ${item.value}`;
+//   });
+// }
+
+// const plant1base64Image = data.plant1['esp32-cam1'].img;
+// // Example usage: Fetch base64 image from Firebase and classify it
+// classifyImageFromFirebase(plant1base64Image);
+
+// //END MODEL
+
 
 // Function to format sensor values
 function formatValue(value, decimals = 2) {
@@ -65,6 +125,8 @@ function sendEmail(subject, message) {
     });
 }
 
+// Capture button handler
+
 document.getElementById('capture-button').addEventListener('click', () => {
   // Reference to the photo handler in Firebase
   const photoHandlerRef = ref(db, 'ESP32-Gateway1/plant1/esp32-cam1/capture-handler');
@@ -78,7 +140,60 @@ document.getElementById('capture-button').addEventListener('click', () => {
     .catch((error) => {
       console.error('Error updating photo handler:', error);
     });
+
+  // Fetch the base64 image from Firebase
+  const imageRef = ref(db, 'ESP32-Gateway1/plant1/esp32-cam1/img');
+  onValue(imageRef, (snapshot) => {
+    const base64Image = snapshot.val(); // This should be the base64 image data
+
+    if (base64Image) {
+      // Call the classifyImage function to send the image for classification
+      classifyImage(base64Image);
+    } else {
+      console.log('No image data available');
+    }
+  });
 });
+
+// Function to send the base64 image to the server for classification
+async function classifyImage(base64Image) {
+  try {
+    // Make a POST request to the server with the base64 image
+    const response = await fetch('/classify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ base64Image }), // Send base64 image as JSON
+    });
+
+    if (!response.ok) {
+      throw new Error('Error classifying image');
+    }
+
+    // Get the classification result
+    const result = await response.json();
+
+    // Display the classification result on the webpage
+    displayResults(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Function to display the classification results on the webpage
+function displayResults(result) {
+  console.log('Classification Result:', result);
+  
+  // Update the result display element (or create a new element in your HTML)
+  const classificationResultElement = document.getElementById('classificationResult');
+  if (classificationResultElement) {
+    classificationResultElement.innerHTML = `
+      <pre>${JSON.stringify(result, null, 2)}</pre>
+    `;
+  }
+}
+
 
 // Reference to ESP32-Gateway1 data and listen for changes
 const espRef = ref(db, 'ESP32-Gateway1');
@@ -137,3 +252,34 @@ onValue(espRef, (snapshot) => {
     console.error("Error updating data:", error); // Debugging: log errors
   }
 });
+
+// async function classifyImage(base64Image) {
+//   try {
+//     const response = await fetch('/classify', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ base64Image }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error('Error classifying image');
+//     }
+
+//     const result = await response.json();
+//     displayResults(result); // Display result on the webpage
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
+
+// Display classification results
+// function displayResults(result) {
+//   console.log('Classification Result:', result);
+//   document.getElementById('classificationResult').innerHTML = JSON.stringify(result, null, 2);
+// }
+
+// Example usage
+// const plant1base64Image = data.plant1['esp32-cam1'].img;
+// classifyImage(plant1base64Image); // Send base64 image to server for classification

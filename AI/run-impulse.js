@@ -1,6 +1,7 @@
 // run-impulse.js
 const sharp = require('sharp');
-const Module = require('../edge-impulse-standalone');
+// const Module = require('/edge-impulse-standalone');
+const Module = require('./edge-impulse-standalone');
 
 // Classifier module
 let classifierInitialized = false;
@@ -65,6 +66,10 @@ class EdgeImpulseClassifier {
         heapBytes.set(new Uint8Array(typedArray.buffer));
         return { ptr: ptr, buffer: heapBytes };
     }
+    
 }
+
+
+
 
 module.exports = EdgeImpulseClassifier;
