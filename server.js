@@ -1,14 +1,13 @@
 const express = require('express'); // Node.js web server framework
 const bodyParser = require('body-parser'); // Parse JSON data
+const cors = require('cors'); // Enable CORS
 const { getDatabase, ref, onValue } = require('firebase/database');
 const { initializeApp } = require('firebase/app');
 const EdgeImpulseClassifier = require('./AI/run-impulse.js');  // Server-side model
-const fs = require('fs'); // File system modulec
-const {base64ToRawFeatures, normalizeToHex} = require('./AI/base64tohex.js'); // Convert base64 to raw features
+const fs = require('fs'); // File system module
+const { base64ToRawFeatures, normalizeToHex } = require('./AI/base64tohex.js'); // Convert base64 to raw features
 
-const base64ToHex = require('./AI/base64tohex.js'); // Convert base64 to hex
-//console.log(EdgeImpulseClassifier);
-// Initialize Firebase
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAm0lVR4SRAn2Roj2cixoVWpt3jjmBiLRY",
   authDomain: "awesomeplantwateringdb.firebaseapp.com",
@@ -23,6 +22,9 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const server = express();
+
+// Enable CORS for all requests
+server.use(cors());
 server.use(bodyParser.json()); // For parsing application/json
 
 // API to classify image
@@ -30,62 +32,33 @@ server.post('/classify', async (req, res) => {
   const base64Image = req.body.base64Image; // Receive base64 image from client
 
   try {
-    // Step 1: Convert base64 to hex
-    //const hexData = await base64ToHex(base64Image);
-    //console.log(hexData);
-
-    // Step 2: Initialize and classify
     const classifier = new EdgeImpulseClassifier();
     await classifier.init();
 
-    // Step 3: Convert hex to raw data (adapt this step based on your model)
-    //const rawData = convertHexToRawData(hexData);
-
-    // Step 4: Classify the image
-    const data = await fs.promises.readFile("message (3).txt", 'utf-8');
-    //console.log(data);
-   // console.log(hexData);
-    const rawData2 = await (data);
-    let hexFeatures;
     base64ToRawFeatures(base64Image)
-    .then(rawFeatures => {
+      .then(rawFeatures => {
         const hexFeatures = normalizeToHex(rawFeatures);
         console.log('Hex Features:', hexFeatures);
-        const numericFeatures = hexFeatures.map(hex => parseInt(hex, 16)); // แปลง hex เป็นตัวเลข
+        const numericFeatures = hexFeatures.map(hex => parseInt(hex, 16)); // Convert hex to numeric features
 
         try {
-            // เรียกใช้งาน classifier และเก็บผลลัพธ์
-            const result = classifier.classify(numericFeatures);
-            console.log('Inference Result:', result);
-            res.json(result);
+          const result = classifier.classify(numericFeatures);
+          console.log('Inference Result:', result);
+          res.json(result);
         } catch (err) {
-            console.error('garderers', err);
+          console.error('Error during classification:', err);
+          res.status(500).json({ error: 'Classification error' });
         }
-    })
-    .catch(err => {
-        console.error('Error:', err);
-    });
-    // console.log('Hex Features:', hexFeatures);
-    // const result = await classifier.classify(hexFeatures.trim().split(',').map(n => Number(n)));
-    // console.log(result);
-
-    // Send the classification result back to client
-    
+      })
+      .catch(err => {
+        console.error('Error converting base64 image to raw features:', err);
+        res.status(500).json({ error: 'Error processing image' });
+      });
   } catch (error) {
     console.error('Error classifying image:', error);
-    res.status(500).send('Error classifying image');
+    res.status(500).json({ error: 'Error classifying image' });
   }
 });
-
-// Convert hex to raw data
-function convertHexToRawData(hexData) {
-  const rawData = new Float32Array(hexData.length / 2);
-  for (let i = 0; i < hexData.length; i += 2) {
-    rawData[i / 2] = parseInt(hexData.slice(i, i + 2), 16);
-  }
-  //console.log(rawData);
-  return rawData;
-}
 
 // Start the server
 server.listen(3000, () => {
