@@ -23,7 +23,7 @@ async function base64ToHex(base64String) {
     return hexArray.join('');
 }
 
-export { base64ToHex };
+module.exports = base64ToHex;
 
 // Example usage
 // const base64Image = 'your_base64_image_string_here'; // Replace with your Base64 image string

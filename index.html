@@ -7,6 +7,7 @@
   <script type="module" src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
   <!-- <script src="https://cors-anywhere.herokuapp.com/https://cdn.emailjs.com/dist/email.min.js"></script> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
@@ -56,6 +57,9 @@
       </div>
 
       <div class="card" id="image-card">
+        <div class="online-indicator">
+          <span class="blink"></span>
+        </div>
         <img id="plant1-image" alt="Plant 1 Image" />
         <div class="timestamp">
           Updated On: <span id="image1timeStamp">--</span>

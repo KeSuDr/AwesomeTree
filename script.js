@@ -1,5 +1,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
 import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
+import EdgeImpulseClassifier from './AI/run-impulse.js';  // Assuming run-impulse.js is a module
+import base64ToHex from './AI/base64tohex.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -16,6 +18,64 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+
+//MODEL
+
+// Initialize the classifier
+const classifier = new EdgeImpulseClassifier();
+
+// Function to classify an image using the model
+async function classifyImageFromFirebase(base64Image) {
+  try {
+    // Step 1: Convert base64 image to hex data
+    const hexData = await base64ToHex(base64Image);
+    console.log('Hex Data:', hexData); // Optionally log the hex data for debugging
+
+    // Step 2: Initialize the classifier if not already initialized
+    await classifier.init();
+
+    // Step 3: Convert the hex data into the proper format (assuming it's an array of raw pixel data)
+    const rawData = convertHexToRawData(hexData);  // You may need to adapt this based on how the model expects the input
+
+    // Step 4: Classify the image using the model
+    const result = classifier.classify(rawData);
+    console.log('Classification Result:', result);
+
+    // Step 5: Display the results (adjust depending on your UI)
+    displayResults(result);
+
+  } catch (error) {
+    console.error('Error classifying image:', error);
+  }
+}
+
+// Helper function to convert hex data to raw pixel data
+function convertHexToRawData(hexData) {
+  const rawData = new Float32Array(hexData.length / 2);
+  for (let i = 0; i < hexData.length; i += 2) {
+    rawData[i / 2] = parseInt(hexData.slice(i, i + 2), 16);
+  }
+  return rawData;
+}
+
+// Function to display the classification results on your webpage
+function displayResults(result) {
+  // Example of displaying anomaly and classification results
+  console.log('Anomaly:', result.anomaly);
+  result.results.forEach((item) => {
+    console.log(`Label: ${item.label}, Value: ${item.value}`);
+    // You can display the results on your webpage as needed
+    document.getElementById('classificationResult').innerHTML = `Label: ${item.label}, Value: ${item.value}`;
+  });
+}
+
+const plant1base64Image = data.plant1['esp32-cam1'].img;
+// Example usage: Fetch base64 image from Firebase and classify it
+classifyImageFromFirebase(plant1base64Image);
+
+//END MODEL
+
 
 // Function to format sensor values
 function formatValue(value, decimals = 2) {
@@ -101,7 +161,7 @@ onValue(espRef, (snapshot) => {
     // Update plant1 data
     const plant1Timestamp = parseInt(data.plant1.timestamp);
     const image1Timestamp = parseInt(data.plant1['esp32-cam1'].timestamp);
-    const plant1base64Image = data.plant1['esp32-cam1'].img;
+    // const plant1base64Image = data.plant1['esp32-cam1'].img;
     document.getElementById('light1').textContent = formatValue(data.plant1.light) + ' lx';
     document.getElementById('soilMoisture1').textContent = formatValue(data.plant1.soil_moisture) + '%';
     document.getElementById('pumpState1').textContent = data.plant1.pump ? "On" : "Off";
