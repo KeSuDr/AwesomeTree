@@ -18,9 +18,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Initialize EmailJS
-emailjs.init('0UZ2mZidZTAGepxNG');
-
 // Helper functions
 
 // Format sensor values with a specified number of decimal places
@@ -47,21 +44,26 @@ function updateOnlineIndicator(cardId, timestamp) {
   }
 }
 
-// Send email using EmailJS
-function sendEmail(subject, message) {
-  const templateParams = {
-    to_email: 'eurkung@gmail.com',
-    subject: subject,
-    message: message,
-  };
-
-  emailjs.send('service_q6j0aro', 'template_l6zejta', templateParams)
-    .then(response => {
-      console.log('Email sent successfully:', response);
+// Send email using the server (nodemailer)
+function sendEmailToServer(subject, message) {
+  fetch('http://127.0.0.1:3000/send-email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      subject: subject,
+      temperature: message
+    })
+  })
+    .then(response => response.json())  // Expect a JSON response
+    .then(data => {
+      console.log(data.message);  // Handle success response
     })
     .catch(error => {
       console.error('Error sending email:', error);
     });
+  
 }
 
 // Handle image capture button click
@@ -153,8 +155,8 @@ onValue(espRef, (snapshot) => {
     document.getElementById('timeStamp2').textContent = formatTimestamp(data.plant2.timestamp);
 
     // Check conditions and send alerts
-    if (data.temperature > 50) {
-      sendEmail('Temperature Alert', `Temperature is too high: ${data.temperature}°C`);
+    if (true) {
+      sendEmailToServer('Temperature Alert', `Temperature is too high: ${data.temperature}°C`);
     }
 
     // Update online indicators
@@ -162,8 +164,6 @@ onValue(espRef, (snapshot) => {
     updateOnlineIndicator('plant1-card', data.plant1.timestamp);
     updateOnlineIndicator('image-card', data.plant1['esp32-cam1'].stillAlive);
     updateOnlineIndicator('plant2-card', data.plant2.timestamp);
-    
-
 
     // Hide loading screen
     document.getElementById('loading-screen').style.display = 'none';

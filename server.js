@@ -60,6 +60,47 @@ server.post('/classify', async (req, res) => {
   }
 });
 
+const nodemailer = require('nodemailer');
+
+server.post('/send-email', (req, res) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'treeawesome888@gmail.com',
+      pass: 'gffe lkft groq iwme'  // Use your app password here
+    }
+  });
+
+  const options = {
+    from: 'treeawesome888@gmail.com',
+    to: 'eurkung@gmail.com',
+    subject: req.body.subject,
+    text: `Hello,
+
+You got a new message from: awesomeTreeEmbeddedProject
+
+${req.body.temperature}
+
+Best wishes,
+awesomeTree888 team`
+  };
+
+  transporter.sendMail(options, (error, info) => {
+    if (error) {
+      console.log('Error:', error);
+      return res.status(500).json({ error: 'Error sending email' });  // Return error as JSON
+    }
+    console.log('Email sent:', info.response);
+    res.status(200).json({ message: 'Email sent successfully' });  // Return success as JSON
+  });
+});
+
+
+
+
+
+
+
 // Start the server
 server.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
