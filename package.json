@@ -3,10 +3,12 @@
     "@emailjs/browser": "^4.4.1",
     "@sendgrid/mail": "^8.1.4",
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "emailjs-com": "^3.2.0",
     "express": "^4.21.1",
     "firebase": "^11.0.2",
     "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.7",
     "sharp": "^0.33.5"
   },
   "name": "awesometree",

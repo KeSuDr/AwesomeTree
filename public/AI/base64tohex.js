@@ -1,4 +1,4 @@
-const Module = require('./edge-impulse-standalone');
+
 const sharp = require('sharp');
 
 // ฟังก์ชันแปลง base64 เป็น raw features
