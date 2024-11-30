@@ -3,9 +3,9 @@ const bodyParser = require('body-parser'); // Parse JSON data
 const cors = require('cors'); // Enable CORS
 const { getDatabase, ref, onValue } = require('firebase/database');
 const { initializeApp } = require('firebase/app');
-const EdgeImpulseClassifier = require('./AI/run-impulse.js');  // Server-side model
+const EdgeImpulseClassifier = require('./public/AI/run-impulse.js');  // Server-side model
 const fs = require('fs'); // File system module
-const { base64ToRawFeatures, normalizeToHex } = require('./AI/base64tohex.js'); // Convert base64 to raw features
+const { base64ToRawFeatures, normalizeToHex } = require('./public/AI/base64tohex.js'); // Convert base64 to raw features
 
 // Firebase configuration
 const firebaseConfig = {
