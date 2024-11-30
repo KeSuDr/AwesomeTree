@@ -18,13 +18,18 @@ const firebaseConfig = {
   appId: "1:846024263616:web:21bcd9b9a9b88a38c9aa25",
   measurementId: "G-6Y3X3HPEQD"
 };
+const corsConfig = {
+  origin: "*",
+  credential: true,
+  methods : ["GET,HEAD,PUT,PATCH,POST,DELETE"],
+};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const server = express();
 
 // Enable CORS for all requests
-server.use(cors());
+server.use(cors(corsConfig));
 server.use(bodyParser.json()); // For parsing application/json
 
 // API to classify image
