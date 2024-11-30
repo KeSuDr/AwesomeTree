@@ -18,7 +18,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Helper functions
+// Function to navigate to the Google Spreadsheet in a new tab
+export function navigateToSpreadsheet() {
+  window.open('https://docs.google.com/spreadsheets/d/1jfHSwQGUyn4sXa_z6zUbHqK9EECjCONMs2NGPVQHKUU/edit?gid=0#gid=0', '_blank');
+}
+
+// Wait for the DOM to be fully loaded before attaching event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Attach click event listeners to each card that needs to navigate
+  document.getElementById('esp-card').addEventListener('click', navigateToSpreadsheet);
+  document.getElementById('plant1-card').addEventListener('click', navigateToSpreadsheet);
+  document.getElementById('plant2-card').addEventListener('click', navigateToSpreadsheet);
+});
 
 // Format sensor values with a specified number of decimal places
 function formatValue(value, decimals = 2) {
@@ -155,7 +166,7 @@ onValue(espRef, (snapshot) => {
     document.getElementById('timeStamp2').textContent = formatTimestamp(data.plant2.timestamp);
 
     // Check conditions and send alerts
-    if (true) {
+    if (!true) {
       sendEmailToServer('Temperature Alert', `Temperature is too high: ${data.temperature}°C`);
     }
 
