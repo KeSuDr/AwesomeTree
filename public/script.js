@@ -47,15 +47,32 @@ function formatTimestamp(timestamp) {
 }
 
 // Update online/offline status indicator based on timestamp
+// Flag to track whether an email has been sent
+let emailSent = false;
+
+// Update online/offline status indicator based on timestamp
 function updateOnlineIndicator(cardId, timestamp) {
   const indicator = document.querySelector(`#${cardId} .online-indicator`);
   const currentTime = Date.now(); 
-  const threeMinutesAgo = currentTime - 3 * 60 * 1000; 
+  const oneMinuteAgo = currentTime - 1 * 60 * 1000; 
 
-  if (timestamp < threeMinutesAgo) {
+  if (timestamp < oneMinuteAgo) {
+    // Device is offline for more than 3 minutes
     indicator.style.backgroundColor = "#7f8c8d"; // Gray for offline
+    
+    // Send an email if it's the 'esp-card' that is offline and email hasn't been sent
+    if (cardId === 'esp-card' && !emailSent) {
+      sendEmailToServer('Device Offline Alert', 'The ESP32 gateway is offline for more than 3 minutes.');
+      emailSent = true; // Set flag to true after sending email
+    }
   } else {
+    // Device is online
     indicator.style.backgroundColor = "#1eb163"; // Green for online
+    
+    // Reset emailSent flag if the device comes back online
+    if (cardId === 'esp-card' && emailSent) {
+      emailSent = false; // Reset flag when the device is back online
+    }
   }
 }
 
@@ -170,9 +187,9 @@ onValue(espRef, (snapshot) => {
     document.getElementById('timeStamp2').textContent = formatTimestamp(data.plant2.timestamp);
 
     // Check conditions and send alerts
-    if (!true) {
-      sendEmailToServer('Temperature Alert', `Temperature is too high: ${data.temperature}°C`);
-    }
+    // if (!true) {
+    //   sendEmailToServer('Temperature Alert', `Temperature is too high: ${data.temperature}°C`);
+    // }
 
     // Update online indicators
     updateOnlineIndicator('esp-card', data.timestamp);
