@@ -59,5 +59,5 @@ const imageBuffer = Buffer.from(base64WithoutHeader, 'base64');
     
     
     
-    // แปลงและแสดงผล
+    // แปลงและแสดงผลd
 module.exports = {base64ToRawFeatures, normalizeToHex};
