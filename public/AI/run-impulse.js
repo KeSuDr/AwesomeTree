@@ -1,7 +1,7 @@
 // run-impulse.js
 
 // const Module = require('/edge-impulse-standalone');
-const Module = require('./edge-impulse-standalone');
+const Module = require('./edge-impulse-standalone.js');
 
 // Classifier module
 let classifierInitialized = false;
