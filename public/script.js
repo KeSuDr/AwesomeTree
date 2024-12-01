@@ -19,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 //uri backend
-const BACKEND_URL = 'http://localhost:3000';  // Local testing
+const BACKEND_URL = 'https://awesometree-production.up.railway.app';  // Local testing
 //const BACKEND_URL = 'https://awesome-tree.vercel.app';  // Production
 
 // Function to navigate to the Google Spreadsheet in a new tab
