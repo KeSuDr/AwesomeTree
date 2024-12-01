@@ -7,6 +7,7 @@ const EdgeImpulseClassifier = require('./public/AI/run-impulse.js');  // Server-
 const fs = require('fs'); // File system module
 const { base64ToRawFeatures, normalizeToHex } = require('./public/AI/base64tohex.js'); // Convert base64 to raw features
 
+
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAm0lVR4SRAn2Roj2cixoVWpt3jjmBiLRY",
@@ -33,7 +34,7 @@ server.use(cors(corsConfig));
 server.use(bodyParser.json()); // For parsing application/json
 
 // API to classify image
-server.post('/classify', async (req, res) => {
+server.post(`/classify`, async (req, res) => {
   const base64Image = req.body.base64Image; // Receive base64 image from client
 
   try {
@@ -67,7 +68,7 @@ server.post('/classify', async (req, res) => {
 
 const nodemailer = require('nodemailer');
 
-server.post('/send-email', (req, res) => {
+server.post(`/send-email`, (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {

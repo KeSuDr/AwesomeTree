@@ -18,6 +18,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+//uri backend
+//const BACKEND_URL = 'http://localhost:3000';  // Local testing
+const BACKEND_URL = 'https://awesome-tree.vercel.app';  // Production
+
 // Function to navigate to the Google Spreadsheet in a new tab
 export function navigateToSpreadsheet() {
   window.open('https://docs.google.com/spreadsheets/d/1jfHSwQGUyn4sXa_z6zUbHqK9EECjCONMs2NGPVQHKUU/edit?gid=0#gid=0', '_blank');
@@ -57,7 +61,7 @@ function updateOnlineIndicator(cardId, timestamp) {
 
 // Send email using the server (nodemailer)
 function sendEmailToServer(subject, message) {
-  fetch('http://127.0.0.1:3000/send-email', {
+  fetch(`${BACKEND_URL}/send-email`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -104,7 +108,7 @@ document.getElementById('capture-button').addEventListener('click', () => {
 // Send base64 image to the server for classification
 async function classifyImage(base64Image) {
   try {
-    const response = await fetch('http://127.0.0.1:3000/classify', {
+    const response = await fetch(`${BACKEND_URL}/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
